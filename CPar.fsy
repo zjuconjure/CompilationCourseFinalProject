@@ -7,7 +7,7 @@
 
 open Absyn
 
-// Vardesc 返回的是一个 元组 (g,s)
+// Vardesc 返回的是一�?元组 (g,s)
 // g是类型构造函数，s是变量名
 
 let compose1 f (g, s) = ((fun x -> g(f(x))), s)
@@ -17,7 +17,7 @@ let nl = CstI 10
 %token <int> CSTINT CSTBOOL
 %token <string> CSTSTRING NAME
 
-%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE
+%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FOR UNTIL TO
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
@@ -103,13 +103,17 @@ StmtM:  /* No unbalanced if-else */
   | Block                               { $1                   }
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
+  | StmtM UNTIL LPAR Expr RPAR          { Until($1, $4)        }
+  | FOR LPAR Expr SEMI Expr SEMI  Expr RPAR StmtM    { For($3, $5, $7, $9)   }
 ;
 
 StmtU:
     IF LPAR Expr RPAR StmtM ELSE StmtU  { If($3, $5, $7)       }
   | IF LPAR Expr RPAR Stmt              { If($3, $5, Block []) }
   | WHILE LPAR Expr RPAR StmtU          { While($3, $5)        }
-;
+  | StmtU UNTIL LPAR Expr RPAR          { Until($1, $4)        }
+  | FOR LPAR Expr SEMI Expr SEMI  Expr RPAR StmtU    { For($3, $5, $7, $9)   }
+ ;
 
 Expr: 
     Access                              { Access $1           }
@@ -167,6 +171,8 @@ Const:
   | CSTBOOL                             { $1       }
   | MINUS CSTINT                        { - $2     }
   | NULL                                { -1       }
+  | TO                                  { 78       }
+
 ;
 
 Type:

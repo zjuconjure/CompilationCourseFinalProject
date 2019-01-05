@@ -22,12 +22,15 @@ let keyword s =
     | "if"      -> IF
     | "int"     -> INT
     | "null"    -> NULL
+    | "to"    -> TO
     | "print"   -> PRINT
     | "println" -> PRINTLN
     | "return"  -> RETURN
     | "true"    -> CSTBOOL 1
     | "void"    -> VOID 
     | "while"   -> WHILE         
+    | "until"   -> UNTIL         
+    | "for"    -> FOR 
     | _         -> NAME s
  
 let cEscape s = 
