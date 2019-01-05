@@ -133,6 +133,17 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
       let labtest  = newLabel()
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
+    | Until(body,e) ->
+      let labbeginu = newLabel()
+      let labtestu  = newLabel()
+      [Label labbeginu] @ cStmt body varEnv funEnv
+      @ [Label labtestu] @ cExpr e varEnv funEnv @ [IFNZRO labbeginu]
+    | For(e1,e2,e3, body) ->
+      let labbeginf = newLabel()
+      let labtestf  = newLabel()
+      cExpr e1 varEnv funEnv @ 
+      [GOTO labtestf; Label labbeginf] @ cStmt body varEnv funEnv  @ cExpr e2 varEnv funEnv     
+      @ [Label labtestf] @ cExpr e3 varEnv funEnv @ [IFNZRO labbeginf]
     | Expr e -> 
       cExpr e varEnv funEnv @ [INCSP -1]
     | Block stmts -> 
