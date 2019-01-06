@@ -19,7 +19,7 @@ let nl = CstI 10
 
 %token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FOR UNTIL TO
 %token PLUS MINUS TIMES DIV MOD PLUSS MINUSS
-%token EQ NE GT LT GE LE
+%token EQ NE GT LT GE LE QUES COLON
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
 %token EOF
@@ -143,6 +143,7 @@ ExprNotAccess:
   | Expr LE    Expr                     { Prim2("<=", $1, $3) }
   | Expr SEQAND Expr                    { Andalso($1, $3)     }
   | Expr SEQOR  Expr                    { Orelse($1, $3)      }
+  | Expr  QUES   Expr  COLON Expr       { Prim3("?", $1, $3, $5) }
 ;
 
 AtExprNotAccess:

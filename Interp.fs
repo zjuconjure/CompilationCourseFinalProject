@@ -289,6 +289,15 @@ and eval e locEnv gloEnv store : int * store =
           | ">"  -> if i1 >  i2 then 1 else 0
           | _    -> failwith ("unknown primitive " + ope)
       (res, store2) 
+    | Prim3(ope, e1, e2, e3) ->
+      let (i1, store1) = eval e1 locEnv gloEnv store
+      let (i2, store2) = eval e2 locEnv gloEnv store1
+      let (i3,store3) = eval e3 locEnv gloEnv store2
+      let res =
+          match ope with
+          | "?" -> if i1<>0 then i2 else i3
+          | _    -> failwith ("unknown primitive " + ope)
+      (res, store3)
     | Andalso(e1, e2) -> 
       let (i1, store1) as res = eval e1 locEnv gloEnv store
       if i1<>0 then eval e2 locEnv gloEnv store1 else res
