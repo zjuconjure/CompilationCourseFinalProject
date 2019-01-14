@@ -199,33 +199,6 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
                       else store2  //退出循环返回 环境store2
       loop store
 
-    | Until(body,e) ->
-
-      //定义 until循环辅助函数 loop
-      exec body locEnv gloEnv store
-      let rec loop store1 =
-                //求值 循环条件,注意变更环境 store
-              let (v, store2) = eval e locEnv gloEnv store1
-                // 继续循环
-              if v<>0 then loop (exec body locEnv gloEnv store2)
-                      else store2  //退出循环返回 环境store2
-      loop store
-
-    |For(e1,e2,e3, body) ->
-
-      //定义 for循环辅助函数 loop
-      let (_, store1) = eval e1 locEnv gloEnv store 
-      let rec loop store1 =
-                //求值 循环条件,注意变更环境 store
-              let (v, store2) =  eval e2 locEnv gloEnv store1 
-               // 继续循环
-              if v<>0  then loop (exec body locEnv gloEnv store2)
-                       else store2  //退出循环返回 环境store2
-              let (_, store3) = eval e3 locEnv gloEnv store2 
-              (store3)//存储环境
-  
-      loop store
-
     | Expr e ->
       // _ 表示丢弃e的值,返回 变更后的环境store1 
       let (_, store1) = eval e locEnv gloEnv store 
@@ -243,6 +216,16 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
       
       loop stmts (locEnv, store) 
     | Return _ -> failwith "return not implemented"
+
+      // 1.6 For循环
+    | For(e1, e2, stmt) ->
+    
+      let rec loop store1 =
+              let (v, store2) = eval e2 locEnv gloEnv store1
+              if v<>0 then loop (exec stmt locEnv gloEnv store2)
+                      else store2
+      loop store
+
 
 and stmtordec stmtordec locEnv gloEnv store = 
     match stmtordec with 
@@ -267,8 +250,6 @@ and eval e locEnv gloEnv store : int * store =
           | "!"      -> if i1=0 then 1 else 0
           | "printi" -> (printf "%d " i1; i1)
           | "printc" -> (printf "%c" (char i1); i1)
-          | "++"     -> i1+1
-          | "--"     -> i1-1
           | _        -> failwith ("unknown primitive " + ope)
       (res, store1) 
     | Prim2(ope, e1, e2) ->
@@ -289,15 +270,6 @@ and eval e locEnv gloEnv store : int * store =
           | ">"  -> if i1 >  i2 then 1 else 0
           | _    -> failwith ("unknown primitive " + ope)
       (res, store2) 
-    | Prim3(ope, e1, e2, e3) ->
-      let (i1, store1) = eval e1 locEnv gloEnv store
-      let (i2, store2) = eval e2 locEnv gloEnv store1
-      let (i3,store3) = eval e3 locEnv gloEnv store2
-      let res =
-          match ope with
-          | "?" -> if i1<>0 then i2 else i3
-          | _    -> failwith ("unknown primitive " + ope)
-      (res, store3)
     | Andalso(e1, e2) -> 
       let (i1, store1) as res = eval e1 locEnv gloEnv store
       if i1<>0 then eval e2 locEnv gloEnv store1 else res
