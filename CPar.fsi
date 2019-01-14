@@ -12,6 +12,14 @@ type token =
   | COMMA
   | ASSIGN
   | AMP
+  | COLON
+  | QUESTION
+  | BITAND
+  | BITOR
+  | BITXOR
+  | BITLEFT
+  | BITRIGHT
+  | BITNOT
   | NOT
   | SEQOR
   | SEQAND
@@ -26,6 +34,12 @@ type token =
   | TIMES
   | DIV
   | MOD
+  | DOPLUS
+  | DOMINUS
+  | PLUSASSIGN
+  | MINUSASSIGN
+  | MULTIASSIGN
+  | DIVIDEASSIGN
   | CHAR
   | ELSE
   | IF
@@ -36,6 +50,13 @@ type token =
   | RETURN
   | VOID
   | WHILE
+  | FOR
+  | SWITCH
+  | CASE
+  | DEFAULT
+  | MAX
+  | MIN
+  | ABS
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTINT of (int)
@@ -52,6 +73,14 @@ type tokenId =
     | TOKEN_COMMA
     | TOKEN_ASSIGN
     | TOKEN_AMP
+    | TOKEN_COLON
+    | TOKEN_QUESTION
+    | TOKEN_BITAND
+    | TOKEN_BITOR
+    | TOKEN_BITXOR
+    | TOKEN_BITLEFT
+    | TOKEN_BITRIGHT
+    | TOKEN_BITNOT
     | TOKEN_NOT
     | TOKEN_SEQOR
     | TOKEN_SEQAND
@@ -66,6 +95,12 @@ type tokenId =
     | TOKEN_TIMES
     | TOKEN_DIV
     | TOKEN_MOD
+    | TOKEN_DOPLUS
+    | TOKEN_DOMINUS
+    | TOKEN_PLUSASSIGN
+    | TOKEN_MINUSASSIGN
+    | TOKEN_MULTIASSIGN
+    | TOKEN_DIVIDEASSIGN
     | TOKEN_CHAR
     | TOKEN_ELSE
     | TOKEN_IF
@@ -76,6 +111,13 @@ type tokenId =
     | TOKEN_RETURN
     | TOKEN_VOID
     | TOKEN_WHILE
+    | TOKEN_FOR
+    | TOKEN_SWITCH
+    | TOKEN_CASE
+    | TOKEN_DEFAULT
+    | TOKEN_MAX
+    | TOKEN_MIN
+    | TOKEN_ABS
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTINT
@@ -96,6 +138,8 @@ type nonTerminalId =
     | NONTERM_StmtOrDecSeq
     | NONTERM_Stmt
     | NONTERM_StmtM
+    | NONTERM_Caselist
+    | NONTERM_Casedec
     | NONTERM_StmtU
     | NONTERM_Expr
     | NONTERM_ExprNotAccess

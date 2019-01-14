@@ -88,6 +88,17 @@ rule Token = parse
   | eof             { EOF }
   | "++"            { DOPLUS }
   | "--"            { DOMINUS }
+  | "+="            { PLUSASSIGN }
+  | "-="            { MINUSASSIGN }
+  | '?'             { QUESTION }
+  | "~"             { BITNOT }
+  | "<<"            { BITLEFT }
+  | ">>"            { BITRIGHT }
+  | "^"             { BITXOR }       
+  | "|"             { BITOR }
+  | "*="            { MULTIASSIGN }
+  | "/="            { DIVIDEASSIGN }
+  | _               { failwith "Lexer error: illegal symbol" }
 
 and Comment = parse
    | "/*"           { Comment lexbuf; Comment lexbuf }
