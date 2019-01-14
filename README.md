@@ -8,4 +8,4 @@ We add some to the compilor demo - 'Micro-c', which was provided by our teacher.
 - for loop
 - until loop
 - ?
-- ++/-- (only realize it with interpreter)
+- ++/-- 
