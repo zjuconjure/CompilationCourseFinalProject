@@ -1,4 +1,4 @@
-# CompilationCourseFinalProject
+# Compilation Course Final Project
 
 ## Author: hanoch & Jiaming Jin
 
