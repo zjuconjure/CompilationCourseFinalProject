@@ -12,7 +12,7 @@ type typ =
   | TypC                             (* Type char                   *)
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
-                                                                   
+
 and expr =                                                         
   | Access of access                 (* x    or  *p    or  a[e]     *)
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
@@ -23,6 +23,8 @@ and expr =
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
+  | Doplus of access                 (* Double Plus                 *)
+  | Dominus of access                (* Double Minus                *)
                                                                    
 and access =                                                       
   | AccVar of string                 (* Variable access        x    *) 
@@ -32,11 +34,11 @@ and access =
 and stmt =                                                         
   | If of expr * stmt * stmt         (* Conditional                 *)
   | While of expr * stmt             (* While loop                  *)
-  | Until of stmt * expr            (* Until loop                  *)
-  | For of expr * expr * expr * stmt     (* For loop                  *)
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
+  | For of expr * expr * expr * stmt  (* For loop                   *)
+  | Until of stmt * expr            (* Until loop                  *)
                                                                    
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
