@@ -22,15 +22,19 @@ let keyword s =
     | "if"      -> IF
     | "int"     -> INT
     | "null"    -> NULL
-    | "to"    -> TO
     | "print"   -> PRINT
     | "println" -> PRINTLN
     | "return"  -> RETURN
     | "true"    -> CSTBOOL 1
     | "void"    -> VOID 
-    | "while"   -> WHILE         
-    | "until"   -> UNTIL         
-    | "for"    -> FOR 
+    | "while"   -> WHILE
+    | "for"     -> FOR
+    | "switch"  -> SWITCH    
+    | "case"    -> CASE
+    | "default" -> DEFAULT
+    | "Max"     -> MAX
+    | "Min"     -> MIN
+    | "Abs"     -> ABS
     | _         -> NAME s
  
 let cEscape s = 
@@ -55,8 +59,6 @@ rule Token = parse
                     { keyword (lexemeAsString lexbuf) }
   | '+'             { PLUS } 
   | '-'             { MINUS } 
-  | "++"            { PLUSS } 
-  | "--"            { MINUSS } 
   | '*'             { TIMES } 
   | '/'             { DIV } 
   | '%'             { MOD }                     
@@ -78,14 +80,14 @@ rule Token = parse
   | '['             { LBRACK }
   | ']'             { RBRACK }
   | ';'             { SEMI }
-  | '?'             { QUES }
   | ':'             { COLON }
   | ','             { COMMA }
   | "//"            { EndLineComment lexbuf; Token lexbuf }
   | "/*"            { Comment lexbuf; Token lexbuf }
   | '"'             { CSTSTRING (String [] lexbuf) }
   | eof             { EOF }
-  | _               { failwith "Lexer error: illegal symbol" }
+  | "++"            { DOPLUS }
+  | "--"            { DOMINUS }
 
 and Comment = parse
    | "/*"           { Comment lexbuf; Comment lexbuf }
