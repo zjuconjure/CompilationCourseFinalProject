@@ -34,7 +34,6 @@ type bstmtordec =
 (* ------------------------------------------------------------------- *)
 
 (* Code-generating functions that perform local optimizations *)
-
 let rec addINCSP m1 C : instr list =
     match C with
     | INCSP m2            :: C1 -> addINCSP (m1+m2) C1
@@ -108,7 +107,7 @@ let rec addCST i C =
 
 (* Simple environment operations *)
 
-type 'data Env = (string * 'data) list
+type 'data env = (string * 'data) list
 
 let rec lookup env x = 
     match env with 
@@ -117,24 +116,24 @@ let rec lookup env x =
 
 (* A global variable has an absolute address, a local one has an offset: *)
 
-type Var = 
+type var = 
     | Glovar of int                   (* absolute address in stack           *)
     | Locvar of int                   (* address relative to bottom of frame *)
 
 (* The variable environment keeps track of global and local variables, and 
    keeps track of next available offset for local variables *)
 
-type VarEnv = (Var * typ) Env * int
+type varEnv = (var * typ) env * int
 
 (* The function environment maps a function name to the function's label, 
    its return type, and its parameter declarations *)
 
-type Paramdecs = (typ * string) list
-type FunEnv = (label * typ option * Paramdecs) Env
+type paramdecs = (typ * string) list
+type funEnv = (label * typ option * paramdecs) env
 
 (* Bind declared variable in varEnv and generate code to allocate it: *)
 
-let allocate (kind : int -> Var) (typ, x) (varEnv : VarEnv) : VarEnv * instr list =
+let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr list =
     let (env, fdepth) = varEnv 
     match typ with
     | TypA (TypA _, _) -> failwith "allocate: arrays of arrays not permitted"
@@ -149,17 +148,17 @@ let allocate (kind : int -> Var) (typ, x) (varEnv : VarEnv) : VarEnv * instr lis
 
 (* Bind declared parameter in env: *)
 
-let bindParam (env, fdepth) (typ, x) : VarEnv = 
+let bindParam (env, fdepth) (typ, x) : varEnv = 
     ((x, (Locvar fdepth, typ)) :: env, fdepth+1);
 
-let bindParams paras (env, fdepth) : VarEnv = 
+let bindParams paras (env, fdepth) : varEnv = 
     List.fold bindParam (env, fdepth) paras;
 
 (* ------------------------------------------------------------------- *)
 
 (* Build environments for global variables and global functions *)
 
-let makeGlobalEnvs(topdecs : topdec list) : VarEnv * FunEnv * instr list = 
+let makeGlobalEnvs(topdecs : topdec list) : varEnv * funEnv * instr list = 
     let rec addv decs varEnv funEnv = 
         match decs with 
         | [] -> (varEnv, funEnv, [])
@@ -183,7 +182,7 @@ let makeGlobalEnvs(topdecs : topdec list) : VarEnv * FunEnv * instr list =
    * C       is the code that follows the code for stmt
 *)
 
-let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr list = 
+let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr list = 
     match stmt with
     | If(e, stmt1, stmt2) -> 
       let (jumpend, C1) = makeJump C
@@ -217,7 +216,7 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr 
     | Return (Some e) -> 
       cExpr e varEnv funEnv (RET (snd varEnv) :: deadcode C)
 
-and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
+and bStmtordec stmtOrDec varEnv : bstmtordec * varEnv =
     match stmtOrDec with 
     | Stmt stmt    ->
       (BStmt stmt, varEnv) 
@@ -240,7 +239,7 @@ and bStmtordec stmtOrDec varEnv : bstmtordec * VarEnv =
    actually achieve this in a different way.
  *)
 
-and cExpr (e : expr) (varEnv : VarEnv) (funEnv : FunEnv) (C : instr list) : instr list =
+and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr list =
     match e with
     | Access acc     -> cAccess acc varEnv funEnv (LDI :: C)
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
