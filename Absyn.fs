@@ -25,6 +25,22 @@ and expr =
   | Call of string * expr list       (* Function call f(...)        *)
   | Doplus of access                 (* Double Plus                 *)
   | Dominus of access                (* Double Minus                *)
+  | PreDoplus of access              (* Previous Double Plus        *)
+  | PreDominus of access             (* Previous Double Minus       *)
+  | PlusAssign of access * expr      (* Plus Assign                 *)
+  | MinusAssign of access * expr     (* Minus Assign                *)
+  | MultiAssign of access * expr     (* Multiply Assign             *)
+  | DivideAssign of access * expr    (* Divide Assign               *)
+  | Question of expr * expr * expr (* Condition expression          *)
+  | Bitxor of expr * expr            (* bit operation XOR           *)
+  | Bitand of expr * expr            (* bit operation AND           *)
+  | Bitor of expr * expr             (* bit operation OR            *)
+  | Bitleft of expr * expr           (* bit operation LEFT SHIFT    *)
+  | Bitright of expr * expr          (* bit operation RIGHT SHIFT   *)
+  | Bitnot of string * expr          (* bit operation NOT           *)
+  | Max of expr * expr               (* Max function                *)
+  | Min of expr * expr               (* Min function                *)
+  | Abs of expr                      (* Abs function                *)
                                                                    
 and access =                                                       
   | AccVar of string                 (* Variable access        x    *) 
@@ -38,7 +54,8 @@ and stmt =
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
   | For of expr * expr * expr * stmt  (* For loop                   *)
-  | Until of stmt * expr            (* Until loop                  *)
+  | Switch of expr * (int * stmt) list    (* Switch case no default *)
+  | Switch2 of expr * (int * stmt) list * stmt (* Switch case       *)
                                                                    
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
