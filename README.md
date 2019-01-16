@@ -3,9 +3,10 @@
 ## Author: hanoch & Jiaming Jin
 
 This project is bout our junior class bout 'Compiler'.  
-We add some to the compilor demo - 'Micro-c', which was provided by our teacher.
+Cause we two members' heavy course load, we could not implements many 'fumctions', which are provided by C89/C99/C11.  
+We just added something to the compilor demo - 'Micro-c', which was provided by our teacher.
 
-- for loop
+- for loop.
 - until loop
 - ?
 - i++/--
